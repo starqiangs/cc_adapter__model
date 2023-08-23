@@ -9,6 +9,7 @@ public:
 
 class HDMI
 {
+public:
     virtual void Play() = 0;
 };
 
@@ -31,7 +32,6 @@ public:
     }
 };
 
-
 class Computer
 {
 public:
@@ -41,13 +41,27 @@ public:
     }
 };
 
+class Adapter : public VGA
+{
+public:
+    Adapter(HDMI *p) : pHdmi(p) {}
+    void Play()
+    {
+        pHdmi->Play();
+    }
+
+private:
+    HDMI *pHdmi;
+};
+
 int main()
 {
     Computer computer;
     computer.PlayVideo(new Tv01());
     // 接口传入的对象不兼容
     // 方案 写一个转换头 vga信号转换成hdmi信号（适配器）
-    computer.PlayVideo(new Tv02());
+    // computer.PlayVideo(new Tv02());
+    computer.PlayVideo(new Adapter(new Tv02()));
 
     return 0;
 }
